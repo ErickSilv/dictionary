@@ -181,7 +181,7 @@ Key DAL<Key, Data, KeyComparator>::max() const
 	{
 		
 		current = mpt_Data[ i ].id;
-		if( compa( current, larger ) )
+		if( compa( larger, current ) )
 		{
 			larger = current;
 		}
@@ -202,6 +202,11 @@ bool DAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key & _y ) const
 		return false;
 	}
 
+	if ( _x == max() )
+	{
+		return false;
+	}
+
 	// O elemento _x não se encontra no dicionário.
 	if( _search(_x) == -1 )
 	{
@@ -216,7 +221,7 @@ bool DAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key & _y ) const
 	int current;
 
 
-	// Busca o predecessor de _x e salva em pred o novo predecessor(current).
+	// Busca o predecessor de _x e salva em suc o novo predecessor(current).
 	for( int i = 0; i < mi_Length; ++i )
 	{
 		
@@ -243,6 +248,11 @@ bool DAL<Key, Data, KeyComparator>::predecessor( const Key & _x, Key & _y ) cons
 		return false;
 	}
 
+	if ( _x == min() )
+	{
+		return false;
+	}
+
 	// A chave _x não está no dicionário.
 	if( _search(_x) == -1 )
 	{
@@ -257,11 +267,12 @@ bool DAL<Key, Data, KeyComparator>::predecessor( const Key & _x, Key & _y ) cons
 	int current;
 
 
-	// Busca o 
+	// Busca o sucessor de _x e salva em suc o novo sucessor(current). 
 	for( int i = 0; i < mi_Length; ++i )
 	{
 		current = mpt_Data[ i ].id;
-		if( compa( _x, current ) and compa( current, pred ) ){
+		if( compa( _x, current ) and compa( current, pred ) )
+		{
 			pred = current;
 		}
 	}
@@ -363,7 +374,7 @@ bool DSAL<Key, Data, KeyComparator>::insert( const Key & _novaID, const Data & _
 	auto & m_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
 	auto & m_Capacity = DAL<Key, Data, KeyComparator>::mi_Capacity;
 
-	///If it's empty or it's full.
+	// Se estiver cheio não há como inserir;
 	if( m_Length == m_Capacity )
 	{
 		throw std::out_of_range("Dicionário cheio não há como inserir!\n");
@@ -379,7 +390,7 @@ bool DSAL<Key, Data, KeyComparator>::insert( const Key & _novaID, const Data & _
 	auto test_p = 0;
 	int pos = _search( _novaID );
 
-	/// Searches the right position
+	// Procura a posição certa para inserir.
 	while( test_p < m_Length )
 	{
 		a_ = m_Data[ test_p ].id;
@@ -389,7 +400,7 @@ bool DSAL<Key, Data, KeyComparator>::insert( const Key & _novaID, const Data & _
 		++test_p;
 	}
 
-	// Insertion is in the end of the list.
+	// Se a inserção for no fim da lista.
 	if( pos == m_Length-1 )
 	{
 
@@ -401,7 +412,7 @@ bool DSAL<Key, Data, KeyComparator>::insert( const Key & _novaID, const Data & _
 		return true;
 
 	}
-	else if( pos == -1 ) //! Inserção é no começo da lista.
+	else if( pos == -1 ) //! Se a inserção é no começo da lista.
 	{ 	
 		//Reorganiza as chaves e conteudos para abrir espaço para inserção.	
 		for( auto i(m_Length); i > pos+1; --i )
@@ -417,7 +428,7 @@ bool DSAL<Key, Data, KeyComparator>::insert( const Key & _novaID, const Data & _
 
 		return true;
 	}
-	else
+	else 				// Senão, se é no meio da lista.
 	{
 		//Reorganiza as chaves e conteudos para abrir espaço para inserção.	
 		for( auto i(m_Length); i > pos+1; --i ) 

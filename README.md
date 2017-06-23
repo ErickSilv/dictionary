@@ -1,9 +1,8 @@
-# Tabela de Dispersão
+# TAD Dicionário
 
 ## Descrição
 
-Implementação da ED Tabela de Dispersão com aplicação cliente para contas bancárias, desenvolvido como trabalho para a
-matéria EDB I do curso BTI na UFRN.
+Implementar o Tipo Abstratos de Dado (TAD) Dicionário com base em lista sequencial (i.e. vetor), ordenada e não ordenada. Para a disciplina de EDB I do curso BTI na UFRN.
 
 ## Compilando
 
@@ -11,7 +10,7 @@ matéria EDB I do curso BTI na UFRN.
 
 ## Executando
 
->build/app
+>build/dict
 
 ## Autoria
 
