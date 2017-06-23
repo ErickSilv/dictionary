@@ -5,14 +5,10 @@
 #include <string>
 
 template < typename Key, typename Data, typename KeyComparator >
-
 class DAL 
 {
 
 	protected :
-		using Key = int ; // Alias para Chave .
- 		using Data = std::string ; // Alias para Dado .
- 	
  		struct NodeAL // Estrutura do n´o , representando o par chave - informação . 
  		{ 
  			Key id ; // A chave ´e um inteiro simples .
@@ -20,16 +16,16 @@ class DAL
  		};
 
  		static const int DEF_SIZE = 50; // Tamanho default da lista .
- 		int mi_Length ; // Comprimento atual da lista .
- 		int mi_Capacity ; // Capacidade m´axima de armazenamento .
-		NodeAL * mpt_Data ; // ´Area de armazenamento : vetor alocado dinamicamente .
+ 		int mi_Length; // Comprimento atual da lista .
+ 		int mi_Capacity; // Capacidade m´axima de armazenamento .
+		NodeAL * mpt_Data; // ´Area de armazenamento : vetor alocado dinamicamente .
 
-		int _search ( const Key & _x ) const ; // M´etodo de busca auxiliar .
+		int _search ( const Key & _z ) const ; // M´etodo de busca auxiliar .
 
  	public :
 
  		//Construtor e Destrutor.
-	 	DAL ( int _MaxSz = DEF_SIZE );
+	 	DAL( int _MaxSz = DEF_SIZE );
 		virtual ~ DAL () 
 		{ delete [] mpt_Data ; };
 
@@ -50,10 +46,12 @@ class DAL
 		std::ostream &operator<< ( std::ostream& _os , const DAL & _oList ) 
 		{
 			_os << "[ ";
-		 	for ( int i(0); i < _oList . mi_Length; ++ i )
-		 	{
-				_os << "{id: " << _oList . mpt_Data[ i ]. id << ", info : "
-					<< _oList . mpt_Data [i ]. info << "} ";
+			for( int i(0); i < _oList.mi_Length; ++i )
+			{
+			
+				_os << "{id: " << _oList.mpt_Data[i].id << ", info: "
+					<< _oList.mpt_Data[i].info << "}\n ";
+			
 			}
 		 	_os << "]";
 		 	return _os;
@@ -73,7 +71,7 @@ class DSAL : public DAL<Key, Data, KeyComparator>{
 		{ /* Empty */ };
 
 		bool remove(const Key & _x, Data & _s);
-		bool insert(const Key & _novaID, const Data & _novaInfo);
+		bool insert(const Key & _newID, const Data & _newInfo);
 		Key min() const;
 		Key max() const;
 		bool sucessor(const Key & _x, Key & _y) const;
@@ -85,6 +83,6 @@ class DSAL : public DAL<Key, Data, KeyComparator>{
 
 };
 
-#include "dal.inl"
+#include "dictionary.inl"
 
 #endif

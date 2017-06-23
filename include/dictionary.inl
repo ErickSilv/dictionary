@@ -1,12 +1,12 @@
-
-//Construtor
+/// DAL
+/// Constructor
 template <typename Key, typename Data, typename KeyComparator>
-DAL<Key, Data, KeyComparator>::DAL( int _MaxSz )
+DAL<Key, Data, KeyComparator>::DAL(int _MaxSz)
 	//valores padrao para a definição de um dicionário.
 	: mi_Length( 0 )					// Tamanho lógico = 0.
-	, mi_Capacity(_MaxSz)				// Capacidade Total = 50.
-	, mpt_Data( nullptr )					// Ponteiro para o inicio = nullptr.
-{
+	, mi_Capacity( _MaxSz )				// Capacidade Total = 50.
+	, mpt_Data( nullptr )				// Ponteiro para o inicio = nullptr.
+{ 	
 
 	// Se o tamanho for inválido não tenta reservar memória. 
 	// Caso contrário, reserva memória suficiente para o parametro (_MaxSz) passado. 
@@ -17,21 +17,21 @@ DAL<Key, Data, KeyComparator>::DAL( int _MaxSz )
 	else
 	{
 		mpt_Data = new NodeAL[ _MaxSz ];
-	}
+	} 
 
 }
 
-
+// Linear Search
 template <typename Key, typename Data, typename KeyComparator>
-int DAL<Key, Data, KeyComparator>::_search( const Key & _z )
+int DAL<Key, Data, KeyComparator>::_search( const Key & _z ) const
 {
-
+	
 	for( auto i = 0; i < mi_Length; ++i )
 	{
 		
 		auto founded = mpt_Data[ i ].id;
 
-		if( founded == _x )
+		if( founded == _z )
 		{
 			//Foi encontrado, retorna o índice no dicionário.
 			return i;
@@ -48,6 +48,7 @@ template <typename Key, typename Data, typename KeyComparator>
 bool DAL<Key, Data, KeyComparator>::search( const Key & _x, Data & _s ) const
 {
 
+	
 	// Realiza a pesquisa auxiliar.
 	int _p = _search( _x );
 
@@ -57,37 +58,6 @@ bool DAL<Key, Data, KeyComparator>::search( const Key & _x, Data & _s ) const
 		_s = mpt_Data[ _p ].info;
 		return true;
 
-	}
-	else
-	{
-		return false;
-	}
-
-}
-
-template <typename Key, typename Data, typename KeyComparator>
-bool DAL<Key, Data, KeyComparator>::insert( const Key & _newKey, const Data & _newInfo )
-{
-
-	// Verifica se o tamamho lógico ainda é menor que o físico.
-	// Caso seja menor, realiza a inserção e retorna true. Senão retorna false.
-	if( mi_Length < mi_Capacity )
-	{
-
-		int _p = _search( _newKey );
-		mpt_Data[ _p ].id = _newKey;
-		mpt_Data[ _p ].info = _newInfo;
-
-		++mi_Length;
-
-
-		if( _p == mi_Length )
-		{
-			++mi_Length;
-		}
-
-		return true;
-	
 	}
 	else
 	{
@@ -118,7 +88,7 @@ bool DAL<Key, Data, KeyComparator>::remove( const Key & _x, Data & _s )
 		return true;
 
 	}
-	else if( pos != -1 ) //!< Posição existe e não é a última.
+	else if( pos != -1 ) //! Posição existe e não é a última.
 	{		
 		_s = mpt_Data[ pos ].info;
 		std::copy( &mpt_Data[ pos+1 ], &mpt_Data[ mi_Length+1 ], &mpt_Data[ pos ] );
@@ -132,6 +102,30 @@ bool DAL<Key, Data, KeyComparator>::remove( const Key & _x, Data & _s )
 }
 
 template <typename Key, typename Data, typename KeyComparator>
+bool DAL<Key, Data, KeyComparator>::insert( const Key & _newKey, const Data & _newInfo )
+{
+
+	// Verifica se o tamamho lógico ainda é igual ao físico.
+	// Caso seja igual, a inserção não é possivel e retorna false. Senão, insere o elemento e retorna true.
+	if( mi_Length == mi_Capacity )
+	{
+
+		return false;
+
+	}
+
+		mpt_Data[ mi_Length ].id = _newKey;
+		mpt_Data[ mi_Length ].info = _newInfo;
+
+		++mi_Length;
+
+
+		return true;
+	
+	
+}
+
+template <typename Key, typename Data, typename KeyComparator>
 Key DAL<Key, Data, KeyComparator>::min() const
 {
 
@@ -141,6 +135,7 @@ Key DAL<Key, Data, KeyComparator>::min() const
 		throw std::out_of_range("Dicionário Vazia!\n");
 	}
 
+	// Função de comparação
 	KeyComparator compa;
 
 	// Assume para comparação o primeiro elemento como o menor, visto que o dicionário não está ordenado.
@@ -151,7 +146,7 @@ Key DAL<Key, Data, KeyComparator>::min() const
 	for( int i = 1; i < mi_Length; ++i )
 	{
 
-		current = mpt_Data[ i ].id
+		current = mpt_Data[ i ].id;
 		if( compa( current, smaller ) )
 		{
 			smaller = current;
@@ -164,7 +159,8 @@ Key DAL<Key, Data, KeyComparator>::min() const
 }
 
 template <typename Key, typename Data, typename KeyComparator>
-Key DAL<Key, Data, KeyComparator>::max() const{
+Key DAL<Key, Data, KeyComparator>::max() const
+{
 
 	// Se estiver vazia, não há maior.
 	if( mi_Length == 0 )
@@ -172,7 +168,7 @@ Key DAL<Key, Data, KeyComparator>::max() const{
 		throw std::out_of_range("It's empty");
 	}
 
-
+	// Função de comparação.
 	KeyComparator compa;
 
 	// Assume como o maior, o primeiro elemento como o maior, visto que o dicionário não está ordenado.
@@ -184,8 +180,8 @@ Key DAL<Key, Data, KeyComparator>::max() const{
 	for( int i = 1; i < mi_Length; ++i )
 	{
 		
-		current = mpt_Data[ i ].id
-		if( compa( a_, larger ) )
+		current = mpt_Data[ i ].id;
+		if( compa( current, larger ) )
 		{
 			larger = current;
 		}
@@ -195,7 +191,6 @@ Key DAL<Key, Data, KeyComparator>::max() const{
 	return larger;
 
 }
-
 
 template <typename Key, typename Data, typename KeyComparator>
 bool DAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key & _y ) const
@@ -213,7 +208,7 @@ bool DAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key & _y ) const
 		return false;
 	}
 
-
+	// Função de comparação.
 	KeyComparator compa;
 
 	// Salva o sucessor de todos.
@@ -226,7 +221,7 @@ bool DAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key & _y ) const
 	{
 		
 		current = mpt_Data[ i ].id;
-		if( cmp( _x, current ) and cmp( current, suc ) )
+		if( compa( _x, current ) and compa( current, suc ) )
 		{
 			suc = current;
 		}
@@ -265,8 +260,8 @@ bool DAL<Key, Data, KeyComparator>::predecessor( const Key & _x, Key & _y ) cons
 	// Busca o 
 	for( int i = 0; i < mi_Length; ++i )
 	{
-		a_ = mpt_Data[ i ].id;
-		if( cmp( _x, current ) and cmp( current, pred ) ){
+		current = mpt_Data[ i ].id;
+		if( compa( _x, current ) and compa( current, pred ) ){
 			pred = current;
 		}
 	}
@@ -277,7 +272,8 @@ bool DAL<Key, Data, KeyComparator>::predecessor( const Key & _x, Key & _y ) cons
 }
 
 // DSAL
-// Busca Binária para executar a inserção.
+
+// Busca Binária.
 template <typename Key, typename Data, typename KeyComparator>
 int DSAL<Key, Data, KeyComparator>::_search( const Key & _x ) const
 {
@@ -297,7 +293,7 @@ int DSAL<Key, Data, KeyComparator>::_search( const Key & _x ) const
 
 		if( _x == current )
 		{
-			return middle
+			return middle;
 		}
 		else if( compa( _x, current ) )
 		{
@@ -318,36 +314,37 @@ template <typename Key, typename Data, typename KeyComparator>
 bool DSAL<Key, Data, KeyComparator>::remove( const Key & _x, Data & _s )
 {
 
-	auto & m_Length = DAL<Key, Data, KeyComparator>::mi_Length;
-	auto & m_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
+	auto &m_Length = DAL<Key, Data, KeyComparator>::mi_Length;
+	auto &m_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
 
-	// Dicionário está vazio.
+	// Se o tamanho lógico for 0, o dicionário está vazio. Então não há o que remover.
 	if( m_Length == 0 )
 	{
 		return false;
 	}
 
-	// Encontra a posição da key _x.
+	// Acha a posição da chave _x no dicionário.
 	auto pos = _search(_x);
 
-	// Se estiver na última posição.
+	// Caso a posição seja a primeira.
 	if( pos == ( m_Length-1 ) )
 	{
+		
 		_s = m_Data[ pos ].info;
-		--mi_Length;
+
+		--m_Length;
 		return true;
 
 	}
-	else if( pos != -1 ) // Se for encontrada, mas não na última posição.
+	//Caso não seja a primeira e se encontra no dicionário.
+	else if( pos != -1 ) 
 	{		
-		_s = m_Data[ pos ].info;
-
-		for( int i = pos; i < m_Length-1; ++i )
+		_s = m_Data[pos].info;
+		
+		for( auto i(pos); i < m_Length-1; ++i )
 		{
-		
-			m_Data[i].id = m_Data[ i+1 ].id;
-			m_Data[i].info = m_Data[ i+1 ].info;
-		
+			m_Data[ i ].id = m_Data[ i+1 ].id;
+			m_Data[ i ].info = m_Data[ i+1 ].info;
 		}
 
 		--m_Length;
@@ -357,17 +354,92 @@ bool DSAL<Key, Data, KeyComparator>::remove( const Key & _x, Data & _s )
 
 }
 
+/// OBS: Esse metódo foi feito com ajuda do aluno GABRIEL SOUZA
 template <typename Key, typename Data, typename KeyComparator>
-bool DSAL<Key, Data, KeyComparator>::insert( const Key & _newID, const Data &  _newInfo )
+bool DSAL<Key, Data, KeyComparator>::insert( const Key & _novaID, const Data & _novaInfo )
 {
 
 	auto & m_Length = DAL<Key, Data, KeyComparator>::mi_Length;
 	auto & m_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
+	auto & m_Capacity = DAL<Key, Data, KeyComparator>::mi_Capacity;
+
+	///If it's empty or it's full.
+	if( m_Length == m_Capacity )
+	{
+		throw std::out_of_range("Dicionário cheio não há como inserir!\n");
+	}
+
+	// Função de comparação
+	KeyComparator cmp;
+
+	// Objeto Key auxiliar para a inserção.
+	Key a_;
+
+
+	auto test_p = 0;
+	int pos = _search( _novaID );
+
+	/// Searches the right position
+	while( test_p < m_Length )
+	{
+		a_ = m_Data[ test_p ].id;
+		if( cmp( a_, _novaID ) ){
+			pos = test_p;
+		}
+		++test_p;
+	}
+
+	// Insertion is in the end of the list.
+	if( pos == m_Length-1 )
+	{
+
+		m_Data[ m_Length ].id = _novaID;
+		m_Data[ m_Length ].info = _novaInfo;
+		
+		++m_Length;
+
+		return true;
+
+	}
+	else if( pos == -1 ) //! Inserção é no começo da lista.
+	{ 	
+		//Reorganiza as chaves e conteudos para abrir espaço para inserção.	
+		for( auto i(m_Length); i > pos+1; --i )
+		{
+			m_Data[ i ].id = m_Data[ i-1 ].id;
+			m_Data[ i ].info = m_Data[ i-1 ].info;
+		}
+
+		m_Data[ 0 ].id = _novaID;
+		m_Data[ 0 ].info = _novaInfo;
+		
+		++m_Length;
+
+		return true;
+	}
+	else
+	{
+		//Reorganiza as chaves e conteudos para abrir espaço para inserção.	
+		for( auto i(m_Length); i > pos+1; --i ) 
+		{
+			m_Data[ i ].id = m_Data[ i-1 ].id;
+			m_Data[ i ].info = m_Data[ i-1 ].info;
+		}
+		
+		m_Data[ pos+1 ].id = _novaID;
+		m_Data[ pos+1 ].info = _novaInfo;
+		
+		++m_Length;
+
+		return true;
+	}
+
+	return false;
 
 }
 
 template <typename Key, typename Data, typename KeyComparator>
-int DSAL<Key, Data, KeyComparator>::min() const
+Key DSAL<Key, Data, KeyComparator>::min() const
 {
 
 	auto & m_Length = DAL<Key, Data, KeyComparator>::mi_Length;
@@ -385,7 +457,7 @@ int DSAL<Key, Data, KeyComparator>::min() const
 }
 
 template <typename Key, typename Data, typename KeyComparator>
-int DSAL<Key, Data, KeyComparator>::max() const
+Key DSAL<Key, Data, KeyComparator>::max() const
 {
 
 	auto & m_Length = DAL<Key, Data, KeyComparator>::mi_Length;
@@ -433,7 +505,8 @@ bool DSAL<Key, Data, KeyComparator>::sucessor( const Key & _x, Key & _y ) const
 }
 
 template <typename Key, typename Data, typename KeyComparator>
-bool DSAL<Key, Data, KeyComparator>::predecessor(const Key & _x, Key & _y) const{
+bool DSAL<Key, Data, KeyComparator>::predecessor( const Key & _x, Key & _y ) const
+{
 
 	auto & m_Length = DAL<Key, Data, KeyComparator>::mi_Length;
 	auto & m_Data = DAL<Key, Data, KeyComparator>::mpt_Data;
@@ -459,4 +532,3 @@ bool DSAL<Key, Data, KeyComparator>::predecessor(const Key & _x, Key & _y) const
 	return true;
 
 }
-
